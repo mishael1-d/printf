@@ -1,19 +1,47 @@
+#ifndef MAIN_H
+#define MAIN_H
 #include <stdarg.h>
-int _putchar(char c);
-void _puts(char *str);
-int _strlen(char *s);
+#include <stdio.h>
+/**
+ * struct vtype - struct vtype
+ * @tp: tp
+ * @f: function
+ *
+ */
+typedef struct vtype
+{
+	char tp;
+	void (*f)();
+} vtype_t;
 int _printf(const char *format, ...);
-char *convert_to(char representation[], unsigned int num, int base);
-int function_manager(char c, va_list arg);
-int _switch(char c, va_list arg);
-int print_character(va_list arg);
-int print_sign(va_list arg, int base);
-int print_unsign(va_list arg, int base);
-int print_string(va_list arg);
-int print_ptr(va_list arg);
-int print_rot13(va_list arg);
-int print_rev(va_list arg);
-int print_base16_upper_lower(va_list arg, char *representation);
-int loop_format(va_list arg, const char *string);
-int call_function_manager(char aux, va_list arg);
-int check_percent(int *flag, char aux);
+void print_char(va_list valist);
+void print_int(va_list valist);
+void print_float(va_list valist);
+void print_string(va_list valist);
+void _write_buffer(char *buffer, int *index);
+int _strlen(char *s);
+char *_memcpy(char *dest, char *src, unsigned int n);
+void format_s(va_list valist, char *buffer, int *index);
+void format_c(va_list valist, char *buffer, int *index);
+void format_d(va_list valist, char *buffer, int *index);
+char *itos(char str[], long int num);
+char *utos(char str[], int num);
+int num_len(int num);
+int float_len(double f);
+void format_i(va_list valist, char *buffer, int *index);
+void format_u(va_list valist, char *buffer, int *index);
+void format_perc(va_list valist, char *buffer, int *index);
+void format_p(va_list valist, char *buffer, int *index);
+void format_lx(va_list valist, char *buffer, int *index);
+char *tostring(char str[], int num);
+int num_len(int num);
+void reset_buffer(char buffer[]);
+void *rot13(char *s);
+void rev_string(char *s);
+void format_h(va_list valist, char *buffer, int *index);
+void format_ch(va_list valist, char *buffer, int *index);
+void format_o(va_list valist, char *buffer, int *index);
+void format_b(va_list valist, char *buffer, int *index);
+void format_r(va_list valist, char *buffer, int *index);
+void format_R(va_list valist, char *buffer, int *index);
+#endi
