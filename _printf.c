@@ -7,105 +7,44 @@
  */
 int _printf(const char *format, ...)
 {
-	const char *string;
-	int cont = 0;
-	va_list arg;
-
+	char buffer[1024];
+	int i, j = 0, a = 0, *index = &a;
+	va_list valist;
+	vtype_t spec[] = {
+		{'c', format_c}, {'d', format_d}, {'s', format_s}, {'i', format_d},
+		{'u', format_u}, {'%', format_perc}, {'x', format_h}, {'X', format_ch},
+		{'o', format_o}, {'b', format_b}, {'p', format_p}, {'r', format_r},
+		{'R', format_R}, {'\0', NULL}
+	};
 	if (!format)
 		return (-1);
-
-	va_start(arg, format);
-	string = format;
-
-	cont = loop_format(arg, string);
-
-	va_end(arg);
-	return (cont);
-}
-/**
- *loop_format - loop format
- *@arg: va_list arg
- *@string: pointer from format
- *Description: This function make loop tp string pointer
- *Return: num of characteres printed
- */
-int loop_format(va_list arg, const char *string)
-{
-	int i = 0, flag = 0, cont_fm = 0, cont = 0, check_per = 0;
-
-	while (i < _strlen((char *)string) && *string != '\0')
+	va_start(valist, format);
+	for (i = 0; format[i] != '\0'; i++)
 	{
-		char aux = string[i];
-
-		if (aux == '%')
+		for (; format[i] != '%' && format[i] != '\0'; *index += 1, i++)
 		{
-			i++, flag++;
-			aux = string[i];
-			if (aux == '\0' && _strlen((char *)string) == 1)
-				return (-1);
-			if (aux == '\0')
-				return (cont);
-			if (aux == '%')
+			if (*index == 1024)
+			{	_write_buffer(buffer, index);
+				reset_buffer(buffer);
+				*index = 0;
+			}
+			buffer[*index] = format[i];
+		}
+		if (format[i] == '\0')
+			break;
+		if (format[i] == '%')
+		{	i++;
+			for (j = 0; spec[j].tp != '\0'; j++)
 			{
-				flag++;
-			} else
-			{
-				cont_fm = function_manager(aux, arg);
-				if (cont_fm >= 0 && cont_fm != -1)
-				{
-					i++;
-					aux = string[i];
-					if (aux == '%')
-						flag--;
-					cont = cont + cont_fm;
-				} else if (cont_fm == -1 && aux != '\n')
-				{
-					cont += _putchar('%');
+				if (format[i] == spec[j].tp)
+				{	spec[j].f(valist, buffer, index);
+					break;
 				}
 			}
 		}
-		check_per = check_percent(&flag, aux);
-		cont += check_per;
-		if (check_per == 0 && aux != '\0' && aux != '%')
-			cont += _putchar(aux), i++;
-		check_per = 0;
 	}
-	return (cont);
-}
-/**
- * check_percent - call function manager
- *@flag: value by reference
- *@aux: character
- *Description: This function print % pear
- *Return: 1 if % is printed
- */
-int check_percent(int *flag, char aux)
-{
-	int tmp_flag;
-	int cont = 0;
-
-	tmp_flag = *flag;
-	if (tmp_flag == 2 && aux == '%')
-	{
-		_putchar('%');
-		tmp_flag = 0;
-		cont = 1;
-	}
-	return (cont);
-}
-
-/**
- * call_function_manager - call function manager
- *@aux: character parameter
- *@arg: va_list arg
- *Description: This function call function manager
- *Return: num of characteres printed
- */
-
-int call_function_manager(char aux, va_list arg)
-{
-	int cont = 0;
-
-	cont = function_manager(aux, arg);
-	return (cont);
+	va_end(valist);
+	buffer[*index] = '\0';
+	_write_buffer(buffer, index);
+	return (*index);
 }
