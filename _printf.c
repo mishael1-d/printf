@@ -1,12 +1,18 @@
 #include "main.h"
 
 /**
+<<<<<<< HEAD
  * _printf - produces output according to a format
  * @format: format string containing the characters and the specifiers
  * Description: this function will call the get_print() function that will
  * determine which printing function to call depending on the conversion
  * specifiers contained into fmt
  * Return: length of the formatted output string
+=======
+ *_printf - printf
+ *@format: const char pointer
+ *Return: num of characteres printed
+>>>>>>> f3a4c66b8ab2e653b6a2e2eaa6381adfb822df05
  */
 int _printf(const char *format, ...)
 {
